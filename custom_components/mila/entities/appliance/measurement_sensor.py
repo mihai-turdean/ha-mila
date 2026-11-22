@@ -33,5 +33,9 @@ class MilaApplianceMeasurementSensor(MilaApplianceSensor):
         sensor = next((i for i in sensors if i["kind"] == self._sensor_kind), None)
         if sensor:
             value = sensor["latest"]["value"]
-            return value * self._uom_conversion_factor if self._uom_conversion_factor else value
+            result = value * self._uom_conversion_factor if self._uom_conversion_factor else value
+            if isinstance(result, float):
+                precision = self._attr_suggested_display_precision
+                return round(result, precision) if precision else round(result)
+            return result
         return None
